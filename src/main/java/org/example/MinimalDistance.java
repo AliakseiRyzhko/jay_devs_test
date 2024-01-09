@@ -34,13 +34,13 @@ public class MinimalDistance {
         }
 
         int distance = editDistanceMatrix[sourceLength][targetLength];
-        System.out.println("Minimum Edit Distance: " + distance);
-
         int currentSourceIndex = sourceLength;
         int currentTargetIndex = targetLength;
         StringBuilder transformedWord = new StringBuilder(target);
 
-        System.out.println(transformedWord.toString());
+        StringBuilder output = new StringBuilder();
+        output.append("Minimum Edit Distance: ").append(editDistanceMatrix[sourceLength][targetLength]).append("\n");
+        output.append(transformedWord.toString()).append("\n");
         while (distance > 0) {
             int deletion = editDistanceMatrix[currentSourceIndex][currentTargetIndex - 1];
             int insertion = editDistanceMatrix[currentSourceIndex - 1][currentTargetIndex];
@@ -51,21 +51,20 @@ public class MinimalDistance {
                 currentSourceIndex--;
                 currentTargetIndex--;
                 distance = substitution;
-                System.out.println(transformedWord.toString());
             } else if (deletion < distance) {
                 transformedWord.deleteCharAt(currentTargetIndex - 1);
                 currentTargetIndex--;
                 distance = deletion;
-                System.out.println(transformedWord.toString());
             } else if (insertion < distance) {
                 transformedWord.setCharAt(currentTargetIndex - 1, source.charAt(currentSourceIndex - 1));
                 currentSourceIndex--;
                 distance = insertion;
-                System.out.println(transformedWord.toString());
             } else {
                 currentSourceIndex--;
                 currentTargetIndex--;
             }
+            output.append(transformedWord.toString()).append("\n");
         }
+        System.out.println(output.toString());
     }
 }
