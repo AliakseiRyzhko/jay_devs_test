@@ -17,7 +17,7 @@ public class MinimalDistance {
     public static void minimalDistance(final String source, final String target) {
         final int sourceLength = source.length();
         final int targetLength = target.length();
-        int[][] editDistanceMatrix = new int[sourceLength + 1][targetLength + 1];
+        final int[][] editDistanceMatrix = new int[sourceLength + 1][targetLength + 1];
 
         for (int i = 0; i <= sourceLength; i++) {
             editDistanceMatrix[i][0] = i;
@@ -38,8 +38,8 @@ public class MinimalDistance {
         int distance = editDistanceMatrix[sourceLength][targetLength];
         int currentSourceIndex = sourceLength;
         int currentTargetIndex = targetLength;
-        StringBuilder transformedWord = new StringBuilder(target);
-        StringBuilder output = new StringBuilder();
+        final StringBuilder transformedWord = new StringBuilder(target);
+        final StringBuilder output = new StringBuilder();
         output.append(MINIMUM_EDIT_DISTANCE).append(editDistanceMatrix[sourceLength][targetLength]).append(System.lineSeparator());
         output.append(transformedWord.toString()).append(System.lineSeparator());
         while (distance > 0) {
