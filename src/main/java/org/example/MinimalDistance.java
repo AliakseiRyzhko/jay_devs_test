@@ -2,6 +2,8 @@ package org.example;
 
 public class MinimalDistance {
     public static final String MINIMUM_EDIT_DISTANCE = "Minimum Edit Distance: ";
+    public static final int OPERATION_COST = 1;
+    public static final int NO_COST = 0;
 
     public static void main(String[] args) {
         try {
@@ -15,60 +17,66 @@ public class MinimalDistance {
     }
 
     public static void minimalDistance(final String source, final String target) {
-        final int sourceLength = source.length();
-        final int targetLength = target.length();
-        final int[][] editDistanceMatrix = new int[sourceLength + 1][targetLength + 1];
+        final int[][] editDistanceMatrix = getDistanceMatrix(source, target);
+        outputIntermediateWords(source, target, editDistanceMatrix);
+    }
 
-        for (int i = 0; i <= sourceLength; i++) {
-            editDistanceMatrix[i][0] = i;
-        }
-        for (int j = 0; j <= targetLength; j++) {
-            editDistanceMatrix[0][j] = j;
-        }
-
-        for (int i = 1; i <= sourceLength; i++) {
-            for (int j = 1; j <= targetLength; j++) {
-                final int deletion = editDistanceMatrix[i][j - 1] + 1;
-                final int insertion = editDistanceMatrix[i - 1][j] + 1;
-                final int substitution = editDistanceMatrix[i - 1][j - 1] + (source.charAt(i - 1) == target.charAt(j - 1) ? 0 : 1);
-                editDistanceMatrix[i][j] = Math.min(Math.min(deletion, insertion), substitution);
-            }
-        }
-
-        int distance = editDistanceMatrix[sourceLength][targetLength];
-        int currentSourceIndex = sourceLength;
-        int currentTargetIndex = targetLength;
+    private static void outputIntermediateWords(String source, String target, int[][] editDistanceMatrix) {
+        int sourceIndex = source.length();
+        int targetIndex = target.length();
+        int distance = editDistanceMatrix[sourceIndex][targetIndex];
         final StringBuilder transformedWord = new StringBuilder(target);
         final StringBuilder output = new StringBuilder();
-        output.append(MINIMUM_EDIT_DISTANCE).append(editDistanceMatrix[sourceLength][targetLength]).append(System.lineSeparator());
+        output.append(MINIMUM_EDIT_DISTANCE).append(editDistanceMatrix[sourceIndex][targetIndex]).append(System.lineSeparator());
         output.append(transformedWord.toString()).append(System.lineSeparator());
         while (distance > 0) {
-            int deletion = editDistanceMatrix[currentSourceIndex][currentTargetIndex - 1];
-            int insertion = editDistanceMatrix[currentSourceIndex - 1][currentTargetIndex];
-            int substitution = editDistanceMatrix[currentSourceIndex - 1][currentTargetIndex - 1];
+            final int deletion = targetIndex > 0  ? editDistanceMatrix[sourceIndex][targetIndex - 1] : distance;
+            final int insertion = sourceIndex > 0 ? editDistanceMatrix[sourceIndex - 1][targetIndex] : distance;
+            final int substitution = (sourceIndex > 0 && targetIndex > 0 ) ? editDistanceMatrix[sourceIndex - 1][targetIndex - 1] : distance;
 
             if (substitution < distance) {
-                transformedWord.setCharAt(currentTargetIndex - 1, source.charAt(currentSourceIndex - 1));
-                currentSourceIndex--;
-                currentTargetIndex--;
+                transformedWord.setCharAt(targetIndex - 1, source.charAt(sourceIndex - 1));
+                sourceIndex--;
+                targetIndex--;
                 distance = substitution;
                 output.append(transformedWord.toString()).append(System.lineSeparator());
             } else if (deletion < distance) {
-                transformedWord.deleteCharAt(currentTargetIndex - 1);
-                currentTargetIndex--;
+                transformedWord.deleteCharAt(targetIndex - 1);
+                targetIndex--;
                 distance = deletion;
                 output.append(transformedWord.toString()).append(System.lineSeparator());
             } else if (insertion < distance) {
-                transformedWord.insert(currentTargetIndex, source.charAt(currentSourceIndex - 1));
-                currentSourceIndex--;
+                transformedWord.insert(targetIndex, source.charAt(sourceIndex - 1));
+                sourceIndex--;
                 distance = insertion;
                 output.append(transformedWord.toString()).append(System.lineSeparator());
             } else {
-                currentSourceIndex--;
-                currentTargetIndex--;
+                sourceIndex--;
+                targetIndex--;
             }
         }
         System.out.println(output.toString());
     }
 
+    private static int[][] getDistanceMatrix(final String source, final String target) {
+        final int sourceLength = source.length();
+        final int targetLength = target.length();
+        final int[][] editDistanceMatrix = new int[sourceLength + 1][targetLength + 1];
+
+        for (int i = 0; i <= sourceLength; i++) {
+            for (int j = 0; j <= targetLength; j++) {
+                if (i == 0) {
+                    editDistanceMatrix[i][j] = j;
+                } else if (j == 0) {
+                    editDistanceMatrix[i][j] = i;
+                } else {
+                    final int deletion = editDistanceMatrix[i][j - 1] + 1;
+                    final int insertion = editDistanceMatrix[i - 1][j] + 1;
+                    final int substitution = editDistanceMatrix[i - 1][j - 1] + (source.charAt(i - 1) == target.charAt(j - 1) ? NO_COST : OPERATION_COST);
+                    editDistanceMatrix[i][j] = Math.min(Math.min(deletion, insertion), substitution);
+                }
+            }
+        }
+        return editDistanceMatrix;
+    }
 }
