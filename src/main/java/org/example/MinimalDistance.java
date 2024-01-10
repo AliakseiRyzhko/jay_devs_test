@@ -1,6 +1,8 @@
 package org.example;
 
 public class MinimalDistance {
+    public static final String MINIMUM_EDIT_DISTANCE = "Minimum Edit Distance: ";
+
     public static void main(String[] args) {
         try {
             if (args.length != 2) {
@@ -37,10 +39,9 @@ public class MinimalDistance {
         int currentSourceIndex = sourceLength;
         int currentTargetIndex = targetLength;
         StringBuilder transformedWord = new StringBuilder(target);
-
         StringBuilder output = new StringBuilder();
-        output.append("Minimum Edit Distance: ").append(editDistanceMatrix[sourceLength][targetLength]).append("\n");
-        output.append(transformedWord.toString()).append("\n");
+        output.append(MINIMUM_EDIT_DISTANCE).append(editDistanceMatrix[sourceLength][targetLength]).append(System.lineSeparator());
+        output.append(transformedWord.toString()).append(System.lineSeparator());
         while (distance > 0) {
             int deletion = editDistanceMatrix[currentSourceIndex][currentTargetIndex - 1];
             int insertion = editDistanceMatrix[currentSourceIndex - 1][currentTargetIndex];
@@ -51,20 +52,23 @@ public class MinimalDistance {
                 currentSourceIndex--;
                 currentTargetIndex--;
                 distance = substitution;
+                output.append(transformedWord.toString()).append(System.lineSeparator());
             } else if (deletion < distance) {
                 transformedWord.deleteCharAt(currentTargetIndex - 1);
                 currentTargetIndex--;
                 distance = deletion;
+                output.append(transformedWord.toString()).append(System.lineSeparator());
             } else if (insertion < distance) {
-                transformedWord.setCharAt(currentTargetIndex - 1, source.charAt(currentSourceIndex - 1));
+                transformedWord.insert(currentTargetIndex, source.charAt(currentSourceIndex - 1));
                 currentSourceIndex--;
                 distance = insertion;
+                output.append(transformedWord.toString()).append(System.lineSeparator());
             } else {
                 currentSourceIndex--;
                 currentTargetIndex--;
             }
-            output.append(transformedWord.toString()).append("\n");
         }
         System.out.println(output.toString());
     }
+
 }

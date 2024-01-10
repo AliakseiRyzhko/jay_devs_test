@@ -1,38 +1,40 @@
 package org.example;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.Test;
 
-/**
- * Unit test for simple App.
- */
-public class MinimalDistanceTest
-    extends TestCase
-{
-    /**
-     * Create the test case
-     *
-     * @param testName name of the test case
-     */
-    public MinimalDistanceTest(String testName )
-    {
-        super( testName );
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class MinimalDistanceTest {
+
+    @Test
+    public void minimalDistanceTest() {
+        StringBuilder expectedOutput = new StringBuilder();
+        expectedOutput.append(MinimalDistance.MINIMUM_EDIT_DISTANCE).append("2").append(System.lineSeparator());
+        expectedOutput.append("word1").append(System.lineSeparator());
+        expectedOutput.append("word").append(System.lineSeparator());
+        expectedOutput.append("wod").append(System.lineSeparator());
+        expectedOutput.append(System.lineSeparator());
+
+        String[] args = {"wod", "word1"};
+        String output = captureSystemOut(() -> MinimalDistance.main(args));
+
+        assertEquals(expectedOutput.toString(), output);
     }
 
-    /**
-     * @return the suite of tests being tested
-     */
-    public static Test suite()
-    {
-        return new TestSuite( MinimalDistanceTest.class );
-    }
+    private String captureSystemOut(Runnable runnable) {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        PrintStream printStream = new PrintStream(outputStream);
+        PrintStream originalOut = System.out;
+        System.setOut(printStream);
 
-    /**
-     * Rigourous Test :-)
-     */
-    public void testApp()
-    {
-        assertTrue( true );
+        try {
+            runnable.run();
+            return outputStream.toString();
+        } finally {
+            System.setOut(originalOut);
+        }
     }
 }
