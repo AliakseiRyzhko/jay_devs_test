@@ -1,6 +1,10 @@
 package org.example;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 public class MinimalDistance {
+    public static final String ILLEGAL_ARGUMENT = "Usage: java MinimalDistance <word1> <word2>";
+    public static final Logger logger = LoggerFactory.getLogger(MinimalDistance.class);
     public static final String MINIMUM_EDIT_DISTANCE = "Minimum Edit Distance: ";
     public static final int OPERATION_COST = 1;
     public static final int NO_COST = 0;
@@ -8,11 +12,11 @@ public class MinimalDistance {
     public static void main(String[] args) {
         try {
             if (args.length != 2) {
-                throw new IllegalArgumentException("Usage: java MinimalDistance <word1> <word2>");
+                throw new IllegalArgumentException(ILLEGAL_ARGUMENT);
             }
             minimalDistance(args[0], args[1]);
         } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
+            logger.error("Error: {}", e.getMessage());
         }
     }
 
