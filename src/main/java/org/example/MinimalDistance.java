@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class MinimalDistance {
-    public static final String ILLEGAL_ARGUMENT = "Usage: java MinimalDistance <word1> <word2>";
+    public static final String ILLEGAL_ARGUMENT = "You need to put exactly 2 words";
     public static final Logger logger = LoggerFactory.getLogger(MinimalDistance.class);
     public static final String MINIMUM_EDIT_DISTANCE = "Minimum Edit Distance: ";
     public static final int OPERATION_COST = 1;
