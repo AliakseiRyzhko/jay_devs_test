@@ -17,7 +17,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MinimalDistanceTest {
-    private ByteArrayOutputStream logOutputStream;
 
     @Test
     public void targetMoreThanSourceTest() {
@@ -65,7 +64,7 @@ public class MinimalDistanceTest {
 
     @Test
     public void oneWordErrorTest() {
-        setupLogger();
+        ByteArrayOutputStream logOutputStream = getLoggerStream();
         String[] args = {"word1"};
         MinimalDistance.main(args);
         String logOutput = logOutputStream.toString();
@@ -87,8 +86,8 @@ public class MinimalDistanceTest {
         }
     }
 
-    public void setupLogger() {
-        logOutputStream = new ByteArrayOutputStream();
+    public ByteArrayOutputStream getLoggerStream() {
+        ByteArrayOutputStream logOutputStream = new ByteArrayOutputStream();
 
         LoggerContext context = (LoggerContext) LogManager.getContext(false);
         Configuration configuration = context.getConfiguration();
@@ -103,5 +102,6 @@ public class MinimalDistanceTest {
         LoggerConfig loggerConfig = configuration.getLoggerConfig(LogManager.ROOT_LOGGER_NAME);
         loggerConfig.addAppender(ref, null, null);
         context.updateLoggers();
+        return logOutputStream;
     }
 }
